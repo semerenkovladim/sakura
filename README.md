@@ -15,6 +15,7 @@ Build a simple laravel development environment with docker-compose.
 $ git clone https://github.com/pavhont/php-course.git
 $ cd php-course
 $ make init
+$ cp .env.example .env
 ```
 
 http://localhost
