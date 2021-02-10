@@ -9,5 +9,6 @@ class PostsController
     public function index()
     {
         $posts = Post::all();
+        dump($posts);
     }
 }
