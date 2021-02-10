@@ -36,13 +36,13 @@ class Request
 
     public function validateCommand(): bool
     {
-        if(! class_exists("Sakura\App\Controllers\\{$this->controller}Controller"))
+        if(! class_exists($this->getController()))
         {
-            dump("Sakura\App\Controllers\\{$this->controller}Controller does not exist");
+            dump("{$this->getController()} does not exist");
             return false;
         }
 
-        if(! method_exists("Sakura\App\Controllers\\{$this->controller}Controller", $this->method))
+        if(! method_exists("{$this->getController()}", $this->method))
         {
             dump("{$this->method} does not exist");
             return false;

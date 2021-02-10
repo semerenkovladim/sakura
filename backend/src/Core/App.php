@@ -15,7 +15,7 @@ class App
 
         $controllerName = $request->getController();
         $method = $request->getMethod();
-        
+
         $controller = new $controllerName;
         $controller->$method();
     }
