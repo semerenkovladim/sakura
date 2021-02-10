@@ -1,0 +1,20 @@
+{
+    "name": "root/backend",
+    "authors": [
+        {
+            "name": "Vladimir Semerenko",
+            "email": "semerenko.vladim@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+    "require-dev": {
+        "wanfeiyy/dd": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sakura\\App\\": "src/"
+        }
+    }
+}
