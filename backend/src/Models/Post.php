@@ -1,6 +1,7 @@
 <?php
 
 namespace Sakura\App\Models;
+use Sakura\App\Core\QueryBuilder;
 
 class Post
 {
@@ -10,26 +11,38 @@ class Post
     private $status;
     private $category;
     private $img;
+    private $shortContent;
     private $content;
 
     public static function all(): array
     {
 
-        $db = require_once ('../storage/db.php');
-        $posts = $db['posts'];
+        $query = new QueryBuilder();
+        $query->select('posts');
+        $posts = $query->query(); 
         return array_map(function($postDb){
             $post = new self;
             $post->setId($postDb['id']);
             $post->setTitle($postDb['title']);
-            $post->setAuthor($postDb['author']);
-            $post->setStatus($postDb['status']);
-            $post->setCategory($postDb['category']);
+            $post->setAuthor($postDb['author_id']);
+            $post->setStatus($postDb['status_id']);
+            $post->setCategory($postDb['category_id']);
             $post->setImg($postDb['img']);
+            $post->setShortContent($post->truncateString($postDb['content'], 100));
             $post->setContent($postDb['content']);
             return $post;
         }, $posts);
     }
 
+    public function truncateString(string $str, int $maxSymbol):string
+    {
+        if(mb_strlen($str) > $maxSymbol) {
+            $str = mb_substr($str, 0, $maxSymbol - 3);
+            $str .= '...';
+        }
+        return $str;
+    }
+    
     public function setId($id)
     {
         $this->id = $id;
@@ -65,6 +78,10 @@ class Post
         $this->content = $content;
     }
 
+    public function setShortContent($shortContent)
+    {
+        $this->shortContent = $shortContent;
+    }
     public function getId(): int
     {
         return $this->id;
@@ -98,5 +115,10 @@ class Post
     public function getContent(): string
     {
         return $this->content;
+    }
+
+    public function getShortContent(): string
+    {
+        return $this->shortContent;
     }
 } 
