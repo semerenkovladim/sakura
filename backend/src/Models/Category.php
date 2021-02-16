@@ -13,13 +13,12 @@ class Category
     {
 
         $query = new QueryBuilder();
-        $query->select('categories');
-        $categories = $query->query();        
+        $categories = $query->table('categories')->select()->get();       
         return array_map(function($categoriesDb){
             $category = new self;
             $category->setId($categoriesDb['id']);
-            $category->setTitle($categoriessDb['title']);
-            return $status;
+            $category->setTitle($categoriesDb['title']);
+            return $category;
         }, $categories);
     }
 

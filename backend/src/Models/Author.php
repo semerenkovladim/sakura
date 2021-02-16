@@ -13,8 +13,7 @@ class Author
     {
 
         $query = new QueryBuilder();
-        $query->select('authors');
-        $authors = $query->query();        
+        $authors = $query->table('authors')->select()->get();        
         return array_map(function($authorsDb){
             $author = new self;
             $author->setId($authorsDb['id']);

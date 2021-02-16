@@ -5,55 +5,101 @@ use PDO;
 
 class QueryBuilder extends DbConnector
 {
-    private string $query;
+    public string $table;
+    public array $select;
+    private array $where;
+    private int $limit;
+    private array $insert;
     private array $condition;
 
     public function __construct()
     {
         parent::__construct();
         $this->condition = ['=', '>', '<', '>=', '<=', '!=', 'BETWEEN', 'LIKE', 'IN'];
+        $this->where = [];
+        $this->limit = -1;
     }
 
-    public function select(string $table, array|string $fields = '*')
+    public function table(string $table): self
     {
-        if(! isset($table)) {
-            dump("table is not defined");
-            return false;
+        if($table) {
+            $this->table = $table;
         }
-        $this->query = 'SELECT ';
-        if(is_array($fields)) {
-            $this->query .= implode(', ', $fields);
+
+        return $this;
+    }
+
+    public function select(array $select = ['*']): self
+    {
+        if(isset($select)) {
+            $this->select = $select;
+        }
+
+        return $this;
+    }
+
+    public function where(array $column, array $value, string $condition = '='): self
+    {
+        if(in_array($condition, $this->condition)) {
+            $this->where = array_combine($column, $value);
+        }
+
+        return $this;
+    }
+
+    public function limit(int $limit = 0): self
+    {
+        if($limit >= 0) {
+            $this->limit = $limit;
         } else {
-            $this->query .= $fields;
+            $this->limit = 0;
         }
-        $this->query .= " FROM {$table}";
+
+        return $this;
+    }
+    public function insert(array $column, array $value)
+    {
+        if(count($column) === count($value)) {
+            $query = "INSERT INTO {$this->table} (";
+            $query .= implode(',', $column);
+            $query .= ') ';
+            $query .= 'VALUES (';
+            $query .= implode(',', $value);
+            $query .= ')';
+            $stmt = $this->getHandler()->query($query);
+        }
     }
 
-    public function where(string $field, string $value, string $condition = "=")
+    public function delete(int $id)
     {
-        if(! isset($field) || ! isset($value)) {
-            dump("field or value is not defined");
-            return false;
+        if($id >= 0) {
+            $query = "DELETE {$this->table} WHERE id = {$id}";
+            $stmt = $this->getHandler()->query($query);
+            dump($stmt);
         }
-        if(! in_array($condition, $this->condition))
-        {
-            dump("condition is incorrect");
-            return false;
-        }
-
-        $this->query .= " WHERE {$field} {$condition} {$value}";
     }
 
-    public function query(): array
+    public function get(): array
     {
-        if(! isset($this->query)) {
-            dump("query is not builded");
-            return false;
+        $query = 'SELECT ';
+        $query .= implode(', ', $this->select);
+        $query .= " FROM {$this->table} ";
+        if(! empty($this->where)) {
+            $column = '';
+            $value = '';
+            $resultWhere = 'WHERE ';
+            foreach($this->where as $key => $value) {
+                $resultWhere .= "{$key} {$this->condition} {$value},";
+            }
+            $resultWhere = substr($resultWhere, 0, strlen($resultWhere) - 1);
+            $query .= "{$resultWhere} ";
         }
-        $dbh = $this->getHandler();
-        $stmt = $dbh->query($this->query);
+        if($this->limit >= 0) {
+            $query .= "LIMIT {$this->limit}";
+        }
 
-        // return $this->getHandler()->query($this->query);
-        return $stmt->fetchAll();
+        $stmt = $this->getHandler()->query($query);
+                
+        return is_array($stmt->fetch()) ? $stmt->fetchAll() : [];
     } 
 }

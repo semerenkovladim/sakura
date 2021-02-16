@@ -18,8 +18,7 @@ class Post
     {
 
         $query = new QueryBuilder();
-        $query->select('posts');
-        $posts = $query->query(); 
+        $posts = $query->table('posts')->select()->get();
         return array_map(function($postDb){
             $post = new self;
             $post->setId($postDb['id']);
@@ -42,7 +41,7 @@ class Post
         }
         return $str;
     }
-    
+
     public function setId($id)
     {
         $this->id = $id;
