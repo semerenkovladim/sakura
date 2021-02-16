@@ -13,8 +13,8 @@ class Status
     {
 
         $query = new QueryBuilder();
-        $query->select('statuses');
-        $statuses = $query->query();        
+        $statuses = $query->table('statuses')->select()->get();
+     
         return array_map(function($statusesDb){
             $status = new self;
             $status->setId($statusesDb['id']);
