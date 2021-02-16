@@ -7,6 +7,7 @@ use Sakura\App\Models\Post;
 use Sakura\App\Models\Category;
 use Sakura\App\Models\Author;
 use Sakura\App\Models\Status;
+use Sakura\App\Services\ValidateForm;
 
 class PostsController
 {
@@ -28,11 +29,23 @@ class PostsController
 
     public function add()
     {
-        if(! isset($_POST)) {
-
+        $error = [];
+        if(empty($_POST)) {
+            $error['all'] = 'You form is empty';
+        } else {
+            $validate = new ValidateFrom();
+            $title = $validate->clean($_POST['title']);
+            $author_id = $validate->clean($_POST['author_id']);
+            $category_id = $validate->clean($_POST['category_id']);
+            $status_id = $validate->clean($_POST['status_id']);
+            $content = $validate->clean($_POST['content']);
+            if(! $validate->checkLength($title, 1, 120))
+            {
+                $error['title'] = 'Incorrect length';
+            }
+            if($validate->isEmpty($title)) {
+                
+            }
         }
-        $post = $_POST;
-        $file = $_FILES;
-        dump($post);
     }
 }
