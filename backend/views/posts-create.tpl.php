@@ -55,7 +55,7 @@ $statuses = $data['statuses'];
                 </div>
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Load cover img</label>
-                    <input class="form-control" type="file" id="formFile" name="img" required>
+                    <input class="form-control" type="file" id="formFile" name="img">
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">Post content</label>
