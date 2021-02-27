@@ -20,7 +20,7 @@ class ValidateForm
         return (mb_strlen($data) >= $min && mb_strlen($data) <= $max);
     }
 
-    public function isEmpty(string $data): bool
+    public function isEmpty(mixed $data): bool
     {
         return empty($data);
     }

@@ -42,6 +42,13 @@ class Post
         return $str;
     }
 
+    public static function store(array $arr): bool {
+        $query = new QueryBuilder();
+        $column = array_keys($arr);
+        $value = array_values($arr);
+        $result = $query->table('posts')->insert($column, $value);
+        return $result;
+    }
     public function setId($id)
     {
         $this->id = $id;
