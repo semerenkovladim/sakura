@@ -67,7 +67,9 @@ class QueryBuilder extends DbConnector
             $query .= implode(',', $value);
             $query .= ')';
             $stmt = $this->getHandler()->query($query);
+            return true;
         }
+        return false;
     }
 
     public function delete(int $id)

@@ -4,6 +4,8 @@
 $categories = $data['categories'];
 $authores = $data['authores'];
 $statuses = $data['statuses'];
+$errorData = isset($data['errorData']) ? $data['errorData'] : null;
+$error = isset($data['error']) ? $data['error'] : null;
 
 ?>
 
@@ -26,40 +28,70 @@ $statuses = $data['statuses'];
             <form method="POST" enctype="multipart/form-data" action="/posts/add">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Title post</label>
-                    <input type="text" name="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    <?php if(is_null($errorData)): ?>
+                    <input type="text" name="title" value="" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <?php else: ?>
+                    <input type="text" name="title" value="<?php echo $errorData['title'];?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <?php endif;?>
+                    <?php if ($error && isset($error['title'])):?>
+                        <div id="emailHelp" class="form-text"><?php echo $error['title']; ?></div>
+                    <?php endif;?>
                 </div>
                 <div class="mb-3">
-                    <select class="form-select" aria-label="Default select example" name="category_id" required>
-                        <option selected>Select category</option>
+                    <select class="form-select" aria-label="Default select example" name="category_id">
                         <?php foreach($categories as $category): ?>
-                            <option value="<?php echo $category->getId(); ?>"><?php echo $category->getTitle(); ?></option>
+                            <?php if($errorData['category_id'] === $category->getId()):?>
+                            <option value="<?php echo $category->getId(); ?>" selected><?php echo $category->getTitle(); ?></option>
+                            <?php else: ?>
+                            <option value="<?php echo $category->getId(); ?>" ><?php echo $category->getTitle(); ?></option>
+                            <?php endif;?>
                         <?php endforeach ?>
                     </select>
+                    <?php if ($error && isset($error['category_id'])):?>
+                        <div id="emailHelp" class="form-text"><?php echo $error['category_id']; ?></div>
+                    <?php endif;?>
                 </div>
                 <div class="mb-3">
-                    <select class="form-select" aria-label="Default select example" name="author_id" required>
-                        <option selected>Select author</option>
+                    <select class="form-select" aria-label="Default select example" name="author_id">
                         <?php foreach($authores as $author): ?>
-                            <option value="<?php echo $author->getId(); ?>"><?php echo $author->getFullname(); ?></option>
+                            <?php if($errorData['author_id'] === $author->getId()):?>
+                                <option value="<?php echo $author->getId(); ?>" selected><?php echo $author->getFullname(); ?></option>
+                            <?php else: ?>
+                                <option value="<?php echo $author->getId(); ?>"><?php echo $author->getFullname(); ?></option>
+                            <?php endif;?>
                         <?php endforeach ?>
                     </select>
+                    <?php if ($error && isset($error['author_id'])):?>
+                        <div id="emailHelp" class="form-text"><?php echo $error['author_id']; ?></div>
+                    <?php endif;?>
                 </div>
                 <div class="mb-3">
-                    <select class="form-select" aria-label="Default select example" name="status_id" required>
-                        <option selected>Select status</option>
+                    <select class="form-select" aria-label="Default select example" name="status_id">
                         <?php foreach($statuses as $status): ?>
-                            <option value="<?php echo $status->getId(); ?>"><?php echo $status->getTitle(); ?></option>
+                            <?php if($errorData['status_id'] === $status->getId()):?>
+                                <option value="<?php echo $status->getId(); ?>" selected><?php echo $status->getTitle(); ?></option>
+                            <?php else: ?>
+                                <option value="<?php echo $status->getId(); ?>"><?php echo $status->getTitle(); ?></option>
+                            <?php endif;?>
                         <?php endforeach ?>
                     </select>
+                    <?php if ($error && isset($error['status_id'])):?>
+                        <div id="emailHelp" class="form-text"><?php echo $error['status_id']; ?></div>
+                    <?php endif;?>
                 </div>
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Load cover img</label>
-                    <input class="form-control" type="file" id="formFile" name="img">
+                    <input class="form-control" type="file" id="formFile" name="img" value="<?php echo $errorData['img'] || '';?>">
+                    <?php if ($error && isset($error['img'])):?>
+                        <div id="emailHelp" class="form-text"><?php echo $error['img']; ?></div>
+                    <?php endif;?>
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">Post content</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="content" required></textarea>
+                    <textarea value="<?php echo $errorData['content'] || '';?>" class="form-control" id="exampleFormControlTextarea1" rows="3" name="content"></textarea>
+                    <?php if ($error && isset($error['content'])):?>
+                        <div id="emailHelp" class="form-text"><?php echo $error['content']; ?></div>
+                    <?php endif;?>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
